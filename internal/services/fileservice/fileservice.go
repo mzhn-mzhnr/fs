@@ -26,8 +26,8 @@ type IdProvider interface {
 }
 
 type FileSaver interface {
-	Save(ctx context.Context, record domain.FileRecord) error
-	SaveMany(ctx context.Context, records []domain.FileRecord) error
+	Save(ctx context.Context, record *domain.FileRecord) error
+	SaveMany(ctx context.Context, records []*domain.FileRecord) error
 }
 
 type FileService struct {

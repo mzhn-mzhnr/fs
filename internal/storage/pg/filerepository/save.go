@@ -15,7 +15,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (r *Repository) Save(ctx context.Context, record domain.FileRecord) error {
+func (r *Repository) Save(ctx context.Context, record *domain.FileRecord) error {
 	fn := "pg.FileRepository.Save"
 	log := r.logger.With(sl.Method(fn), slog.String("id", record.Id), slog.String("filename", record.Name))
 

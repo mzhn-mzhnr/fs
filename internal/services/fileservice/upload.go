@@ -8,7 +8,7 @@ import (
 	"mzhn/fileservice/pkg/sl"
 )
 
-func (s *FileService) Upload(ctx context.Context, entry *domain.Entry) (string, error) {
+func (s *FileService) Upload(ctx context.Context, entry *domain.Entry) (*domain.FileRecord, error) {
 
 	fn := "fileservice.Upload"
 
@@ -19,13 +19,14 @@ func (s *FileService) Upload(ctx context.Context, entry *domain.Entry) (string, 
 
 	log.Info("uploading a file")
 	if err := s.uploader.Upload(ctx, domain.NewEntry(id, entry)); err != nil {
-		return "", fmt.Errorf("%s: %w", fn, err)
+		return nil, fmt.Errorf("%s: %w", fn, err)
 	}
 
 	log.Info("saving file")
-	if err := s.saver.Save(ctx, domain.FileRecord{Id: id, Name: filename}); err != nil {
-		return "", fmt.Errorf("%s: %w", fn, err)
+	rec := &domain.FileRecord{Id: id, Name: filename}
+	if err := s.saver.Save(ctx, rec); err != nil {
+		return nil, fmt.Errorf("%s: %w", fn, err)
 	}
 
-	return formatPath(id, filename), nil
+	return rec, nil
 }

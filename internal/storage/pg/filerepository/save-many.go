@@ -15,7 +15,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (r *Repository) SaveMany(ctx context.Context, records []domain.FileRecord) error {
+func (r *Repository) SaveMany(ctx context.Context, records []*domain.FileRecord) error {
 	fn := "pg.FileRepository.SaveMany"
 	log := r.logger.With(sl.Method(fn))
 

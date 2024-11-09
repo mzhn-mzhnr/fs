@@ -21,7 +21,7 @@ func Upload(svc *fileservice.FileService) echo.HandlerFunc {
 
 		ctx := c.Request().Context()
 
-		paths := make([]string, 0, len(files))
+		entries := make([]*domain.FileRecord, 0, len(files))
 
 		if len(files) == 1 {
 			file := files[0]
@@ -33,12 +33,12 @@ func Upload(svc *fileservice.FileService) echo.HandlerFunc {
 			defer reader.Close()
 
 			e := domain.NewEntry(file.Filename, reader)
-			path, err := svc.Upload(ctx, e)
+			rec, err := svc.Upload(ctx, e)
 			if err != nil {
 				slog.Error("cannot upload file", sl.Err(err))
 				return c.JSON(echo.ErrBadRequest.Code, throw("cannot upload file"))
 			}
-			paths = append(paths, path)
+			entries = append(entries, rec)
 		} else {
 			ee := make([]*domain.Entry, 0, len(files))
 			for _, f := range files {
@@ -57,11 +57,11 @@ func Upload(svc *fileservice.FileService) echo.HandlerFunc {
 				slog.Error("cannot upload file", sl.Err(err))
 				return c.JSON(echo.ErrBadRequest.Code, throw("cannot upload file"))
 			}
-			paths = append(paths, pp...)
+			entries = append(entries, pp...)
 		}
 
 		return c.JSON(200, &H{
-			"paths": paths,
+			"entries": entries,
 		})
 	}
 }

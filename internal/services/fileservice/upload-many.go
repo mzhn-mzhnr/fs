@@ -8,7 +8,7 @@ import (
 	"github.com/samber/lo"
 )
 
-func (s *FileService) UploadMany(ctx context.Context, entries []*domain.Entry) ([]string, error) {
+func (s *FileService) UploadMany(ctx context.Context, entries []*domain.Entry) ([]*domain.FileRecord, error) {
 
 	fn := "fileservice.UploadMany"
 	log := s.logger.With(sl.Method(fn))
@@ -23,15 +23,13 @@ func (s *FileService) UploadMany(ctx context.Context, entries []*domain.Entry) (
 		return nil, err
 	}
 
-	records := lo.Map(entries, func(e *domain.Entry, i int) domain.FileRecord {
-		return domain.FileRecord{Id: ee[i].Filename(), Name: e.Filename()}
+	records := lo.Map(entries, func(e *domain.Entry, i int) *domain.FileRecord {
+		return &domain.FileRecord{Id: ee[i].Filename(), Name: e.Filename()}
 	})
 
 	if err := s.saver.SaveMany(ctx, records); err != nil {
 		return nil, err
 	}
 
-	return lo.Map(records, func(r domain.FileRecord, i int) string {
-		return formatPath(r.Id, r.Name)
-	}), nil
+	return records, nil
 }

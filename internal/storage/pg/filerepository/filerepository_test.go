@@ -134,7 +134,7 @@ func TestSave(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			err := repo.Save(ctx, domain.FileRecord{Id: c.id, Name: c.filename})
+			err := repo.Save(ctx, &domain.FileRecord{Id: c.id, Name: c.filename})
 			require.NoError(t, err)
 		})
 	}
@@ -145,10 +145,10 @@ func TestSaveDuplicate(t *testing.T) {
 	ctx, repo := suite(t)
 
 	id := id()
-	err := repo.Save(ctx, domain.FileRecord{Id: id, Name: "data"})
+	err := repo.Save(ctx, &domain.FileRecord{Id: id, Name: "data"})
 	require.NoError(t, err)
 
-	err = repo.Save(ctx, domain.FileRecord{Id: id, Name: "data2"})
+	err = repo.Save(ctx, &domain.FileRecord{Id: id, Name: "data2"})
 	require.ErrorIs(t, err, storage.ErrFileDuplicate)
 }
 
@@ -156,7 +156,7 @@ func TestSaveNotUuid(t *testing.T) {
 	t.Parallel()
 
 	ctx, repo := suite(t)
-	err := repo.Save(ctx, domain.FileRecord{Id: "not-uuid", Name: "data"})
+	err := repo.Save(ctx, &domain.FileRecord{Id: "not-uuid", Name: "data"})
 	require.ErrorIs(t, err, storage.ErrFileBadId)
 }
 
@@ -166,10 +166,10 @@ func TestSaveMany(t *testing.T) {
 	ctx, repo := suite(t)
 
 	n := 30
-	records := make([]domain.FileRecord, 0, n)
+	records := make([]*domain.FileRecord, 0, n)
 	for i := range n {
 		id := id()
-		records = append(records, domain.FileRecord{Id: id, Name: fmt.Sprintf("data-%d", i)})
+		records = append(records, &domain.FileRecord{Id: id, Name: fmt.Sprintf("data-%d", i)})
 	}
 
 	err := repo.SaveMany(ctx, records)
