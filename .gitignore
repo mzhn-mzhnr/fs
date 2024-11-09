@@ -1,0 +1,6 @@
+bin/
+
+.env*
+cover.html
+static/
+volume/

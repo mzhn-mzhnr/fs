@@ -1,0 +1,38 @@
+services:
+  file-service:
+    container_name: mzhn-file-service
+    restart: unless-stopped
+    build:
+      context: .
+    env_file:
+      - .env
+    environment:
+      WAIT_HOSTS: pgf:5432
+      DATABASE_HOST: pgf
+      DATABASE_PORT: 5432
+      ENV: prod
+    depends_on:
+      - pgf
+    volumes:
+      - "fs_data:/app/volume"
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+
+  pgf:
+    image: postgres:14.13-alpine3.20
+    restart: unless-stopped
+    container_name: mzhn-file-service-pg
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASS}
+    volumes:
+      - fs_pg_data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+volumes:
+  fs_pg_data:
+    name: mzhn-file-service-pg
+  fs_data:
+    name: mzhn-file-service-volume
