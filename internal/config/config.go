@@ -17,9 +17,10 @@ type App struct {
 }
 
 type Http struct {
-	Enabled bool   `env:"HTTP_ENABLED" env-default:"true"`
-	Host    string `env:"HTTP_HOST" env-default:"0.0.0.0"`
-	Port    int    `env:"HTTP_PORT" env-default:"8080"`
+	Enabled   bool   `env:"HTTP_ENABLED" env-default:"true"`
+	Host      string `env:"HTTP_HOST" env-default:"0.0.0.0"`
+	Port      int    `env:"HTTP_PORT" env-default:"8080"`
+	BodyLimit string `env:"HTTP_BODY_LIMIT" env-default:"10M"`
 }
 
 type Postgres struct {

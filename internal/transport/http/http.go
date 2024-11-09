@@ -29,6 +29,7 @@ func New(cfg *config.Config, svc *fileservice.FileService) *Adapter {
 func (adapter *Adapter) setup() {
 	e := adapter.Echo
 	e.Use(middleware.Logger())
+	e.Use(middleware.BodyLimit(adapter.cfg.Http.BodyLimit))
 
 	port := adapter.cfg.Http.Port
 
